@@ -1,10 +1,11 @@
-- 👋 Hi, I’m @omar16971
-- 👀 I’m interested in ...
-- 🌱 I’m currently learning ...
-- 💞️ I’m looking to collaborate on ...
-- 📫 How to reach me ...
 
-<!---
-omar16971/omar16971 is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+  # Collaborate on Figma design
+
+  This is a code bundle for Collaborate on Figma design. The original project is available at https://www.figma.com/design/aVxjgMfn3E4En39nRtXyDq/Collaborate-on-Figma-design.
+
+  ## Running the code
+
+  Run `npm i` to install the dependencies.
+
+  Run `npm run dev` to start the development server.
+  
