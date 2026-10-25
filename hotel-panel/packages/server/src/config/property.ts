@@ -31,6 +31,7 @@ const schema = z.object({
     night_mode: z.object({ from: z.string(), to: z.string() }),
   }),
   vendor: z.object({ adapter: z.string(), host: z.string().optional() }),
+  rules: z.object({ setback: z.object({ setpointC: z.number() }).optional() }).default({}),
   room_types: z.record(z.object({ devices: z.array(device), scenes: z.array(scene).default([]) })),
   rooms: z.array(
     z.object({ number: z.string(), type: z.string(), vendor_map: z.record(z.string()).default({}) }),
@@ -59,6 +60,7 @@ export interface PropertyConfig {
   nightMode: { from: string; to: string }
   adapter: string
   host?: string
+  setbackC?: number
   rooms: RoomConfig[]
 }
 
@@ -111,6 +113,7 @@ export function parseProperty(source: string): PropertyConfig {
     nightMode: cfg.property.night_mode,
     adapter: cfg.vendor.adapter,
     host: cfg.vendor.host,
+    setbackC: cfg.rules.setback?.setpointC,
     rooms,
   }
 }

@@ -24,12 +24,22 @@ export async function buildServer(rt: Runtime): Promise<FastifyInstance> {
 
   app.get('/ws', { websocket: true }, (socket) => {
     let room: string | undefined
+    let staff = false
     const send = (m: ServerMessage) => socket.send(JSON.stringify(m))
     const err = (code: string, message: string) => send({ t: 'error', code, message })
 
     const onState: Parameters<typeof rt.store.on<'state'>>[1] = (deviceId, reading) => {
-      if (room && deviceId.startsWith(`${room}/`)) send({ t: 'state', room, deviceId, reading })
+      const r = deviceId.slice(0, deviceId.indexOf('/'))
+      if (staff || r === room) send({ t: 'state', room: r, deviceId, reading })
     }
+    const snapshot = (n: string): ServerMessage => ({
+      t: 'snapshot',
+      room: n,
+      connected: rt.store.isUp(),
+      setbackC: rt.config.setbackC,
+      devices: rt.store.devices(n),
+      scenes: (rt.room(n)?.scenes ?? []).map(({ id, labelKey }) => ({ id, labelKey })),
+    })
     const onConn = (up: boolean) => send({ t: 'connection', up })
     rt.store.on('state', onState)
     rt.store.on('connection', onConn)
@@ -47,18 +57,17 @@ export async function buildServer(rt: Runtime): Promise<FastifyInstance> {
       }
       const msg = parseClientMessage(raw)
       if (!msg) return err('bad_message', 'unrecognised message')
+      if (msg.t === 'staff-hello') {
+        staff = true
+        for (const r of rt.config.rooms) send(snapshot(r.number))
+        return
+      }
       const cfg = rt.room(msg.room)
       if (!cfg) return err('unknown_room', msg.room)
 
       if (msg.t === 'hello') {
         room = msg.room
-        send({
-          t: 'snapshot',
-          room,
-          connected: rt.store.isUp(),
-          devices: rt.store.devices(room),
-          scenes: cfg.scenes.map(({ id, labelKey }) => ({ id, labelKey })),
-        })
+        send(snapshot(room))
       } else if (msg.t === 'command') {
         rt.store.command(msg.room, msg.deviceId, msg.command).catch((e: Error) => err('command_failed', e.message))
       } else {

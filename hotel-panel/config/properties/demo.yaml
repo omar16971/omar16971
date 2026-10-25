@@ -9,6 +9,9 @@ property:
 vendor:
   adapter: mock
 
+rules:
+  setback: { setpointC: 26 }
+
 room_types:
   standard:
     devices:
@@ -16,6 +19,10 @@ room_types:
       - { id: bed_light,  capability: light,   features: [dimmable], label: device.bed_light }
       - { id: ac,         capability: climate, features: [fanSpeed], label: device.ac }
       - { id: curtain,    capability: cover,   features: [position], label: device.curtain }
+      - { id: bath_light, capability: light,   label: device.bath_light }
+      - { id: shower_heater, capability: switch, label: device.shower_heater }
+      - { id: bath_fan,   capability: switch,  label: device.bath_fan }
+      - { id: occupied,   capability: switch,  label: device.occupied }
       - { id: dnd,        capability: switch,  label: device.dnd }
       - { id: makeup,     capability: switch,  label: device.makeup }
     scenes:
@@ -35,9 +42,16 @@ room_types:
         set:
           - { main_light: { on: false } }
           - { bed_light: { on: false } }
+          - { bath_light: { on: false } }
           - { curtain: { position: 0 } }
           - { ac: { setpointC: 24 } }
 
 rooms:
   - { number: "101", type: standard }
   - { number: "102", type: standard }
+  - { number: "103", type: standard }
+  - { number: "104", type: standard }
+  - { number: "105", type: standard }
+  - { number: "106", type: standard }
+  - { number: "107", type: standard }
+  - { number: "108", type: standard }

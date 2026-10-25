@@ -13,11 +13,13 @@ export interface DeviceView {
 
 export type ClientMessage =
   | { t: 'hello'; room: string }
+  /** Staff surface: a snapshot of every room, then state for every room. */
+  | { t: 'staff-hello' }
   | { t: 'command'; room: string; deviceId: string; command: Command }
   | { t: 'scene'; room: string; sceneId: string }
 
 export type ServerMessage =
-  | { t: 'snapshot'; room: string; connected: boolean; devices: DeviceView[]; scenes: SceneView[] }
+  | { t: 'snapshot'; room: string; connected: boolean; setbackC?: number; devices: DeviceView[]; scenes: SceneView[] }
   | { t: 'state'; room: string; deviceId: string; reading: Reading<DeviceState> }
   | { t: 'connection'; up: boolean }
   | { t: 'scene-result'; room: string; sceneId: string; failed: string[] }
@@ -32,6 +34,8 @@ export function parseClientMessage(raw: unknown): ClientMessage | null {
   switch (raw.t) {
     case 'hello':
       return isStr(raw.room) ? { t: 'hello', room: raw.room } : null
+    case 'staff-hello':
+      return { t: 'staff-hello' }
     case 'command':
       return isStr(raw.room) && isStr(raw.deviceId) && isObj(raw.command) && isStr(raw.command.capability)
         ? { t: 'command', room: raw.room, deviceId: raw.deviceId, command: raw.command as unknown as Command }
