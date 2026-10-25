@@ -1,0 +1,43 @@
+property:
+  id: demo-01
+  name_key: property.demo01
+  languages: [en, ar]
+  default_language: ar
+  timezone: Africa/Cairo
+  night_mode: { from: "22:00", to: "06:00" }
+
+vendor:
+  adapter: mock
+
+room_types:
+  standard:
+    devices:
+      - { id: main_light, capability: light,   features: [dimmable], label: device.main_light }
+      - { id: bed_light,  capability: light,   features: [dimmable], label: device.bed_light }
+      - { id: ac,         capability: climate, features: [fanSpeed], label: device.ac }
+      - { id: curtain,    capability: cover,   features: [position], label: device.curtain }
+      - { id: dnd,        capability: switch,  label: device.dnd }
+      - { id: makeup,     capability: switch,  label: device.makeup }
+    scenes:
+      - id: bright
+        label: scene.bright
+        set:
+          - { main_light: { on: true, brightness: 100 } }
+          - { bed_light: { on: true, brightness: 80 } }
+          - { curtain: { position: 100 } }
+      - id: relax
+        label: scene.relax
+        set:
+          - { main_light: { on: false } }
+          - { bed_light: { on: true, brightness: 30 } }
+      - id: night
+        label: scene.night
+        set:
+          - { main_light: { on: false } }
+          - { bed_light: { on: false } }
+          - { curtain: { position: 0 } }
+          - { ac: { setpointC: 24 } }
+
+rooms:
+  - { number: "101", type: standard }
+  - { number: "102", type: standard }

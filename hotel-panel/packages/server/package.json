@@ -1,0 +1,17 @@
+{
+  "name": "@hotel-panel/server",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "tsx src/index.ts",
+    "demo": "tsx src/demo.ts"
+  },
+  "dependencies": {
+    "@fastify/websocket": "^11.0.0",
+    "@hotel-panel/shared": "*",
+    "fastify": "^5.0.0",
+    "yaml": "^2.6.0",
+    "zod": "^3.23.0"
+  }
+}
